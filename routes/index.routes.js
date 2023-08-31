@@ -10,21 +10,24 @@ router.get("/", (req, res, next) => {
   res.json("All good in here");
 });
 
+// Cloudinary
 router.post("/upload",fileUploader.single("image"), (req, res)=>{
   if (!req.file) {
     next(new Error("No file uploaded!"));
     return;
   }
 
-  res.json({ image: req.file.path });
-})
-
-router.get("/users", isAuthenticated, (req, res) => {
-  console.log('payload', req.payload)
-  res.status(200).json(req.payload)
+  res.json({ image: req.file.path });//sending back the image to front end
 
 })
+router.get("/users", isAuthenticated, (req, res) => { //to get the user info from payload and response user information
+  console.log('payload', req.payload)//to get the user info from payload and response user information
+  res.status(200).json(req.payload)//to get the user info from payload and response user information
 
+})
+
+// Cloudinary
+//add the photo cloudinary
 router.put("/users", (req, res) => {
   const {_id, image } = req.body;
 
@@ -34,7 +37,6 @@ router.put("/users", (req, res) => {
       res.json({ updatedUser: {_id, name,email,image} })
     })
     .catch(err => console.error(err))
-
 })
 
 module.exports = router;

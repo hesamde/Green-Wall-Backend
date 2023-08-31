@@ -21,7 +21,7 @@ module.exports = (app) => {
   // Services like Fly use something called a proxy and you need to add this to your server
   app.set("trust proxy", 1);
 
-  // controls a very specific header to pass headers from the frontend
+  // make sure the deployment send the request to back end
   app.use(
     cors({
       origin: [FRONTEND_URL],
