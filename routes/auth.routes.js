@@ -18,10 +18,10 @@ const saltRounds = 10;
 
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", (req, res, next) => {
-  const { email, password, name , image} = req.body;
+  const { email, password, name } = req.body;
 
   // Check if email or password or name  are provided as empty strings
-  if (email === "" || password === "" || name === "" || image === "") {
+  if (email === "" || password === "" || name === "") {
     res.status(400).json({ message: "Provide email, password , name  " });
     return;
   }
@@ -42,10 +42,10 @@ router.post("/signup", (req, res, next) => {
     });
     return;
   }
-console.log('hello hesam')
   // Check the users collection if a user with the same email already exists
   User.findOne({ email })
     .then((foundUser) => {
+
       // If the user with the same email already exists, send an error response
 
       if (foundUser) {
@@ -65,10 +65,10 @@ console.log('hello hesam')
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, name} = createdUser;
+      const { email , name } = createdUser;
 
       // Create a new object that doesn't expose the password
-      const user = { email, name};
+      const user = { email , name };
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });
@@ -77,7 +77,7 @@ console.log('hello hesam')
 });
 
 // POST  /auth/login - Verifies email and password and returns a JWT
-router.post("/login", (req, res, next) => {
+router.post("/signin", (req, res, next) => {
   const { email, password } = req.body;
 
   // Check if email or password are provided as empty string

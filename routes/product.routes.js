@@ -1,45 +1,20 @@
-// import axios, { Axios } from "axios";
-// import Layout from '../components/Layout';
-// import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
+const express = require("express");
+const router = express.Router();
 
-const { default: next } = require("next/types");
-const router = require("./auth.routes");
+const Product = require("../models/Product.model");
+const fileUploader = require("../config/cloudinary.config");
 
-// const products = () => {
-//     const [productsArr, SetProductsArr] = userState(null);
-//     const [query, serQuery ] = useState(null);
-
-//     useEffect(() => getProductArr(), []);
-
-//     const getProductArr = () => {
-//         axios
-//             .get(``)
-//             .then((response) => SetProductsArr(response.data))
-//             .catch((e) =>
-//             console.log("Error getting the list of products", e)
-//             );
-//     };
-
-//     const searchProduct = (queryToSearch) => {
-//         axios
-//         .get(`${process.env.REACT_APP_API_URL}/search?q=${queryToSearch}`)
-//         .then((response) => getProductArr(response.data))
-//         .catch((e) => console.log("Error getting beers from API", e));
-//     };
-
-
-
-// const express = require("express");
-// const router = express.Router();
-// const User = require("../models/User.model");
-// const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 router.post('/create', (req, res, next) => {
-    const {name,email,} = req.body
+    const { productName , price , location , photo } = req.body
 
-
-)
-}
+    Product.create({ productName , price , location , photo})
+    .then(() => {
+      // Send a json response containing the user object
+        res.status(201).json({ message : "Product succesfuly created" });
+    })
+    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+});
 
 module.exports = router;
