@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     allowed_formats: ["avif","webp","jpeg","jpg", "png"],
-    folder: "profile-app" // The name of the folder in cloudinary
+    folder: "green-wall-project" // The name of the folder in cloudinary
     // resource_type: "raw", // => this is in case you want to upload other types of files, not just images
   }
 });

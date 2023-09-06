@@ -20,19 +20,20 @@ const saltRounds = 10;
 router.post("/signup", (req, res, next) => {
   const { email, password, name } = req.body;
 
+
   // Check if email or password or name  are provided as empty strings
   if (email === "" || password === "" || name === "") {
     res.status(400).json({ message: "Provide email, password , name  " });
     return;
   }
-
+  console.log("step1")
   // This regular expression check that the email is of a valid format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailRegex.test(email)) {
     res.status(400).json({ message: "Provide a valid email address." });
     return;
   }
-
+  console.log("step2")
   // This regular expression checks password for special characters and minimum length
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!passwordRegex.test(password)) {
@@ -42,17 +43,18 @@ router.post("/signup", (req, res, next) => {
     });
     return;
   }
+  console.log("step3")
   // Check the users collection if a user with the same email already exists
   User.findOne({ email })
     .then((foundUser) => {
 
       // If the user with the same email already exists, send an error response
-
+      console.log("step4")
       if (foundUser) {
         res.status(400).json({ message: "User already exists." });
         return;
       }
-
+      console.log("step5")
       // If email is unique, proceed to hash the password
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
@@ -69,7 +71,7 @@ router.post("/signup", (req, res, next) => {
 
       // Create a new object that doesn't expose the password
       const user = { email , name };
-
+      console.log("step6")
       // Send a json response containing the user object
       res.status(201).json({ user: user });
     })
@@ -106,7 +108,7 @@ router.post("/signin", (req, res, next) => {
         const payload = { _id, email, name };
 
         // Create a JSON Web Token and sign it
-        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET ?? "y0uRt0k3N$eCr3T", {
           algorithm: "HS256",
           expiresIn: "6h",
         });
