@@ -71,7 +71,6 @@ router.post("/signup", (req, res, next) => {
 
       // Create a new object that doesn't expose the password
       const user = { email , name };
-      console.log("step6")
       // Send a json response containing the user object
       res.status(201).json({ user: user });
     })
@@ -80,6 +79,7 @@ router.post("/signup", (req, res, next) => {
 
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post("/signin", (req, res, next) => {
+
   const { email, password } = req.body;
 
   // Check if email or password are provided as empty string
@@ -87,6 +87,7 @@ router.post("/signin", (req, res, next) => {
     res.status(400).json({ message: "Provide email and password." });
     return;
   }
+
 
   // Check the users collection if a user with the same email exists
   User.findOne({ email })
