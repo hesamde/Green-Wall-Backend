@@ -26,14 +26,14 @@ router.post("/signup", (req, res, next) => {
     res.status(400).json({ message: "Provide email, password , name  " });
     return;
   }
-  console.log("step1")
+
   // This regular expression check that the email is of a valid format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailRegex.test(email)) {
     res.status(400).json({ message: "Provide a valid email address." });
     return;
   }
-  console.log("step2")
+
   // This regular expression checks password for special characters and minimum length
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!passwordRegex.test(password)) {
@@ -43,7 +43,6 @@ router.post("/signup", (req, res, next) => {
     });
     return;
   }
-  console.log("step3")
   // Check the users collection if a user with the same email already exists
   User.findOne({ email })
     .then((foundUser) => {
@@ -54,14 +53,11 @@ router.post("/signup", (req, res, next) => {
         res.status(400).json({ message: "User already exists." });
         return;
       }
-      console.log("step5")
       // If email is unique, proceed to hash the password
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
-
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-
       return User.create({ email, password: hashedPassword, name });
     })
     .then((createdUser) => {
@@ -81,7 +77,6 @@ router.post("/signup", (req, res, next) => {
 router.post("/signin", (req, res, next) => {
 
   const { email, password } = req.body;
-
   // Check if email or password are provided as empty string
   if (email === "" || password === "") {
     res.status(400).json({ message: "Provide email and password." });

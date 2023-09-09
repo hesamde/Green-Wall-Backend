@@ -68,4 +68,32 @@ router.get("/name", async (req, res) => {
   res.json(products);
 });
 
+//edit
+
+router.put("/edit/:id", async (req, res) => {
+  const id = req.params.id;
+  const product = await Product.findByIdAndUpdate(id,req.body);
+  console.log(req.body);
+  if (!product) {
+    return res.status(404).json("Product not found");
+  }
+
+  res.status(200).json(product);
+});
+
+
+//delet
+
+router.delete("/delete/:id", async (req, res) => {
+
+  const id = req.params.id;
+  console.log(id);
+  const product = await Product.findByIdAndDelete(id);
+  if (!product) {
+    return res.status(404).json("Product not found");
+  }
+
+  res.status(200).json(product);
+});
+
 module.exports = router;
