@@ -3,6 +3,8 @@ const router = express.Router();
 
 const Product = require("../models/Product.model");
 
+// const Comment = require("../models/Comment.model");
+
 const fileUploader = require("../config/cloudinary.config");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
@@ -10,6 +12,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 router.post('/create',
 fileUploader.single("image"), (req, res, next) => {
     const { productName , price , location } = req.body
+
 
     Product.create({ productName , price , location , photo: req.file.path ?? ""})
     .then(() => {
@@ -92,8 +95,59 @@ router.delete("/delete/:id", async (req, res) => {
   if (!product) {
     return res.status(404).json("Product not found");
   }
-
   res.status(200).json(product);
 });
 
+//comment
+
+// router.post ("/product/:id/comment", async (req, res) => {
+//   const id = req.params.id;
+//   const { user , comment} = req.body
+//   const userComment = await Comment.create({product:id , user , comment});
+//   console.log(req.body);
+//   if (!userComment) {
+//     return res.status(404).json("Product not found");
+//   }
+
+//   res.status(200).json(userComment);
+// });
+
+
+// router.get ("/product/:id/comment", async (req, res) => {
+//   const id = req.params.id;
+//   const product = await Comment.find({product:id});
+//   console.log(req.body);
+//   if (!product) {
+//     return res.status(404).json("Product not found");
+//   }
+
+//   res.status(200).json(product);
+// });
+//photo upload profile page
+router.post("/upload",fileUploader.single("image"), (req, res)=>{
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+  res.json({ image: req.file.path });
+})
+
+router.get("/users", isAuthenticated, (req, res) => {
+  console.log('payload', req.payload)
+  res.status(200).json(req.payload)
+
+})
+
+router.put("/users", (req, res) => {
+  const {_id, image } = req.body;
+  console.log('_id:', _id, 'image:', image);
+
+  User.findByIdAndUpdate(_id, { image }, {new: true})
+    .then(updatedUser => {
+      const { _id, name, email, image } = updatedUser
+      res.json({ updatedUser: {_id, name, email, image} })
+    })
+    .catch(err => console.error(err))
+
+})
 module.exports = router;

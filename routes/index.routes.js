@@ -12,6 +12,7 @@ router.get("/", (req, res, next) => {
 
 // Cloudinary
 router.post("/upload",fileUploader.single("image"), (req, res)=>{
+  console.log(req.file);
   if (!req.file) {
     next(new Error("No file uploaded!"));
     return;
@@ -29,18 +30,18 @@ router.get("/users", isAuthenticated, (req, res) => { //to get the user info fro
 // Cloudinary
 //add the photo cloudinary
 router.put("/users", (req, res) => {
-  const {_id, image } = req.body;
+  const { id, image ,editProfile  } = req.body;
+  console.log(editProfile);
+  const  {name ,email } = editProfile
 
-  User.findByIdAndUpdate(_id, { image }, {new: true})
+  User.findByIdAndUpdate(id, { image , name , email }, {new: true})
+
     .then(updatedUser => {
-      const {_id, name,email,image  } = updatedUser
-      res.json({ updatedUser: {_id, name,email,image} })
+      const { _id, name , email , image } = updatedUser
+      console.log(updatedUser);
+      res.json({ updatedUser: { _id, name,email,image} })
     })
     .catch(err => console.error(err))
 })
-
-
-
-
 
 module.exports = router;
