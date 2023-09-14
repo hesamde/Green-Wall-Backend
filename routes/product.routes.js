@@ -2,35 +2,31 @@ const express = require("express");
 const router = express.Router();
 
 const Product = require("../models/Product.model");
-
-// const Comment = require("../models/Comment.model");
-
 const fileUploader = require("../config/cloudinary.config");
-
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
-router.post('/create',
-fileUploader.single("image"), (req, res, next) => {
-    const { productName , price , location } = req.body
+router.post("/create", fileUploader.single("image"), (req, res, next) => {
+  const { productName, price, location } = req.body;
 
-
-    Product.create({ productName , price , location , photo: req.file.path ?? ""})
+  Product.create({ productName, price, location, photo: req.file.path ?? "" })
     .then(() => {
       // Send a json response containing the user object
-        res.status(201).json({ message : "Product succesfuly created" });
+      res.status(201).json({ message: "Product succesfuly created" });
     })
     .catch((err) => console.log(err)); // In this case, we send error handling to the error handling middleware.
 });
+
 //get all
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const products = await Product.find({});
     res.json(products);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
+
 // get one by id
 router.get("/details/:id", async (req, res) => {
   const id = req.params.id;
@@ -41,8 +37,9 @@ router.get("/details/:id", async (req, res) => {
 
   res.status(200).json(product);
 });
+
 // get all
-const filterProductsByName =  async (name) =>{
+const filterProductsByName = async (name) => {
   const products = await Product.find({
     productName: {
       $regex: name ?? "",
@@ -50,7 +47,8 @@ const filterProductsByName =  async (name) =>{
     },
   });
   return products;
-}
+};
+
 //backend with name
 router.get("/name/:name", async (req, res) => {
   const name = req.params.name;
@@ -72,10 +70,9 @@ router.get("/name", async (req, res) => {
 });
 
 //edit
-
 router.put("/edit/:id", async (req, res) => {
   const id = req.params.id;
-  const product = await Product.findByIdAndUpdate(id,req.body);
+  const product = await Product.findByIdAndUpdate(id, req.body);
   console.log(req.body);
   if (!product) {
     return res.status(404).json("Product not found");
@@ -84,11 +81,8 @@ router.put("/edit/:id", async (req, res) => {
   res.status(200).json(product);
 });
 
-
-//delet
-
+//delete
 router.delete("/delete/:id", async (req, res) => {
-
   const id = req.params.id;
   console.log(id);
   const product = await Product.findByIdAndDelete(id);
@@ -98,56 +92,30 @@ router.delete("/delete/:id", async (req, res) => {
   res.status(200).json(product);
 });
 
-//comment
-
-// router.post ("/product/:id/comment", async (req, res) => {
-//   const id = req.params.id;
-//   const { user , comment} = req.body
-//   const userComment = await Comment.create({product:id , user , comment});
-//   console.log(req.body);
-//   if (!userComment) {
-//     return res.status(404).json("Product not found");
-//   }
-
-//   res.status(200).json(userComment);
-// });
-
-
-// router.get ("/product/:id/comment", async (req, res) => {
-//   const id = req.params.id;
-//   const product = await Comment.find({product:id});
-//   console.log(req.body);
-//   if (!product) {
-//     return res.status(404).json("Product not found");
-//   }
-
-//   res.status(200).json(product);
-// });
 //photo upload profile page
-router.post("/upload",fileUploader.single("image"), (req, res)=>{
+router.post("/upload", fileUploader.single("image"), (req, res) => {
   if (!req.file) {
     next(new Error("No file uploaded!"));
     return;
   }
   res.json({ image: req.file.path });
-})
+});
 
 router.get("/users", isAuthenticated, (req, res) => {
-  console.log('payload', req.payload)
-  res.status(200).json(req.payload)
-
-})
+  console.log("payload", req.payload);
+  res.status(200).json(req.payload);
+});
 
 router.put("/users", (req, res) => {
-  const {_id, image } = req.body;
-  console.log('_id:', _id, 'image:', image);
+  const { _id, image } = req.body;
+  console.log("_id:", _id, "image:", image);
 
-  User.findByIdAndUpdate(_id, { image }, {new: true})
-    .then(updatedUser => {
-      const { _id, name, email, image } = updatedUser
-      res.json({ updatedUser: {_id, name, email, image} })
+  User.findByIdAndUpdate(_id, { image }, { new: true })
+    .then((updatedUser) => {
+      const { _id, name, email, image } = updatedUser;
+      res.json({ updatedUser: { _id, name, email, image } });
     })
-    .catch(err => console.error(err))
+    .catch((err) => console.error(err));
+});
 
-})
 module.exports = router;

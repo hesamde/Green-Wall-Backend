@@ -17,6 +17,8 @@ app.use("/auth", authRoutes);
 const productRoutes = require("./routes/product.routes");
 app.use("/product", productRoutes);
 
+const commentRoutes = require("./routes/comment.route");
+app.use("/comment", commentRoutes);
 
 
 app.listen(PORT, () => {
