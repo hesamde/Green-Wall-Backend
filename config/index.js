@@ -22,7 +22,7 @@ module.exports = (app) => {
   app.set("trust proxy", 1);
 
   // make sure the deployment send the request to back end
-  app.use(cors());
+  app.use(cors( ));
 
   // In development environment the app logs
   app.use(logger("dev"));
